@@ -229,6 +229,7 @@ struct listNode *insertMid(int num, int key, int opsiInsert){
         curr->next = newNode;
 
         if(newNode->next == NULL){
+            //update tail jadi di newNode
             tail = newNode;
         }
     }
