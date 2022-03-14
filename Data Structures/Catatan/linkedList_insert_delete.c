@@ -8,15 +8,17 @@ struct listNode{
 };
 
 struct listNode *head = NULL;
-void insertDepan();
-struct listNode *insertDep(int num);
+void insertHead();
+struct listNode *insertDepan(int num);
 
 struct listNode *tail = NULL;
-void insertBelakang();
-struct listNode *insertBel(int num);
+void insertTail();
+struct listNode *insertBelakang(int num);
 
-void insertTengah();
-struct listNode *insertMid(int num, int key, int opsiInsert);
+void insertMid();
+struct listNode *insertTengah(int num, int key, int opsiInsert);
+
+void deleteNode();
 
 struct listNode *display();
 
@@ -42,13 +44,16 @@ void main(){
                 printf("Program keluar...\n");
                 break;
             case 1:
-                insertDepan();
+                insertHead();
                 break;
             case 2:
-                insertBelakang();
+                insertTail();
                 break;
             case 3:
-                insertTengah();
+                insertMid();
+                break;
+            case 4:
+                deleteNode();
                 break;
             default:
                 break;
@@ -62,12 +67,13 @@ void menu(){
     printf("1. Insert Depan\n");
     printf("2. Insert Belakang\n");
     printf("3. Insert Tengah\n");
+    printf("4. Delete Node\n");
     printf("0. Exit\n");
     printf("====================\n");
 }
 
 // insert depan semua
-void insertDepan(){
+void insertHead(){
 
     system("cls");
 
@@ -76,7 +82,7 @@ void insertDepan(){
     scanf("%d", &num);
     getchar();
 
-    insertDep(num);
+    insertDepan(num);
     display();
 
     printf("\n");
@@ -85,7 +91,7 @@ void insertDepan(){
 
 }
 
-struct listNode *insertDep(int num){
+struct listNode *insertDepan(int num){
     // initialize atau buat node baru
     struct listNode *newNode = (struct listNode *)malloc(sizeof(struct listNode));
 
@@ -106,7 +112,7 @@ struct listNode *insertDep(int num){
 }
 
 // insert belakang
-void insertBelakang(){
+void insertTail(){
     
     system("cls");
 
@@ -115,7 +121,7 @@ void insertBelakang(){
     scanf("%d", &num);
     getchar();
 
-    insertBel(num);
+    insertBelakang(num);
     display();
 
     printf("\n");
@@ -123,7 +129,7 @@ void insertBelakang(){
     enterToContinue();
 }
 
-struct listNode *insertBel(int num){
+struct listNode *insertBelakang(int num){
     // initialize atau buat node baru
     struct listNode *newNode = (struct listNode *)malloc(sizeof(struct listNode));
 
@@ -155,7 +161,7 @@ struct listNode *insertBel(int num){
 }
 
 // insert tengah
-void insertTengah(){
+void insertMid(){
     system("cls");
 
     int num;
@@ -179,10 +185,10 @@ void insertTengah(){
         getchar();
 
         if(opsiInsert == 1){
-            insertMid(num, key, opsiInsert);
+            insertTengah(num, key, opsiInsert);
         }
         else if(opsiInsert == 2){
-            insertMid(num, key, opsiInsert);
+            insertTengah(num, key, opsiInsert);
         }
         else{
             printf("Opsi invalid!\n");
@@ -196,7 +202,7 @@ void insertTengah(){
     enterToContinue();
 }
 
-struct listNode *insertMid(int num, int key, int opsiInsert){
+struct listNode *insertTengah(int num, int key, int opsiInsert){
     // initialize atau buat node baru
     struct listNode *newNode = (struct listNode *)malloc(sizeof(struct listNode));
 
@@ -236,16 +242,68 @@ struct listNode *insertMid(int num, int key, int opsiInsert){
     
 }
 
+void deleteNode(){
+
+    system("cls");
+
+    int num;
+    printf("Enter data: ");
+    scanf("%d", &num);
+    getchar();
+
+    // tempatin curr pertama kali di head
+    struct listNode *curr = head;
+
+    // jika num ada di head
+    if(head == NULL){
+        printf("List sudah kosong!\n");
+    }
+    else if(head->data == num){
+        //update head jadi di head ke next (alias node setelah head sebelumnya)
+        head = head->next;
+        free(curr);
+    }
+    // jika num tidak ada di head (alias ada di mid atau tail)
+    else{
+        while(curr->next->data != num){
+            // curr setelahnya jadi curr
+            curr = curr->next;
+        }
+        //jika num ada di tail
+        if(curr->next->data == num){
+            //link curr ke NULL
+            curr->next = NULL;
+            // delete tail
+            free(curr->next);
+            // update curr jadi tail
+            curr = tail;
+        }
+        else{
+            // inisiasi del jadi curr ke next (alias curr setelahnya)
+            struct listNode *del = curr->next;
+            // link curr ke del setelahnya
+            curr->next = del->next;
+            // delete node del
+            free(del);
+        }
+    }
+
+    display();
+
+    printf("\n");
+
+    enterToContinue();
+}
+
 struct listNode *display(){
     
-    struct listNode *ptr;
-    ptr = head;
+    struct listNode *curr = head;
     printf("List Node:");
     
-    while(ptr != NULL){
-        printf(" %d", ptr->data);
+    while(curr != NULL){
+        printf(" %d", curr->data);
         //update ptr lompat satu depannya
-        ptr = ptr->next;
+        curr = curr->next;
     }
 
 }
