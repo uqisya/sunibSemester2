@@ -1,3 +1,3 @@
 # Scientific Computing
 
-Files-files source code mata kuliah scientific computing
+Files source code mata kuliah scientific computing
