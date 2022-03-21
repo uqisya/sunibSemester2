@@ -7,6 +7,8 @@ struct listNode{
     struct listNode *next;
 };
 
+// delete feature masih ada bug
+
 struct listNode *head = NULL;
 void insertHead();
 struct listNode *insertDepan(int num);
@@ -150,7 +152,7 @@ struct listNode *insertBelakang(int num){
         tail = newNode;
     }
 
-    //ini kalau pakai cara traverse
+    // ini kalau pakai cara traverse
     // struct listNode *curr = head;
     // while(curr->next != NULL){
     //     curr = curr->next;
@@ -168,6 +170,8 @@ void insertMid(){
     printf("Enter data: ");
     scanf("%d", &num);
     getchar();
+
+    display();
 
     //key point mau ditaruh di mana value dari num
     int key;
@@ -212,31 +216,64 @@ struct listNode *insertTengah(int num, int key, int opsiInsert){
 
     //curr mulai dari head
     struct listNode *curr = head;
-    //nilai data dari curr di depannya apakah != key
-    while(curr->next->data != key){
-        //apabila tidak sama, maka curr lompat satu kali ke next
-        curr = curr->next;
-    }
 
-    //opsi insert sebelumnya
-    if(opsiInsert == 1){
-        //link newNode ke curr ke next (alias satu langkah didepan curr)
-        newNode->next = curr->next;
-        //link curr ke newNode
-        curr->next = newNode;
+    if(head->data == key){
+        if(opsiInsert == 1){
+            //link newNode ke curr
+            newNode->next = curr;
+            head = newNode;
+        }
+        //opsi insert setelahnya
+        else{
+            //link newNode ke curr ke next (alias satu langkah didepan curr)
+            newNode->next = curr->next;
+            //link curr ke newNode
+            curr->next = newNode;
+
+            if(newNode->next == NULL){
+                //update tail jadi di newNode
+                tail = newNode;
+            }
+        }
     }
-    //opsi insert setelahnya
     else{
-        //curr jadi lompat satu setelahnya
-        curr = curr->next;
-        //link newNode ke curr ke next (alias satu langkah didepan curr)
-        newNode->next = curr->next;
-        //link curr ke newNode
-        curr->next = newNode;
+        //nilai data dari curr di depannya apakah != key
+        int flag = 0;
+        while(curr->next->data != key){
+            if(curr == NULL){
+                printf("haihai\n");
+                flag = 1;
+                break;
+            }
+            //apabila tidak sama, maka curr lompat satu kali ke next
+            curr = curr->next;
+        }
 
-        if(newNode->next == NULL){
-            //update tail jadi di newNode
-            tail = newNode;
+        //opsi insert sebelumnya
+        if(flag == 1){
+            printf("Keypoint tidak ditemukan!\n");
+        }
+        else{
+            if(opsiInsert == 1){
+                //link newNode ke curr ke next (alias satu langkah didepan curr)
+                newNode->next = curr->next;
+                //link curr ke newNode
+                curr->next = newNode;
+            }
+            //opsi insert setelahnya
+            else{
+                //curr jadi lompat satu setelahnya
+                curr = curr->next;
+                //link newNode ke curr ke next (alias satu langkah didepan curr)
+                newNode->next = curr->next;
+                //link curr ke newNode
+                curr->next = newNode;
+
+                if(newNode->next == NULL){
+                    //update tail jadi di newNode
+                    tail = newNode;
+                }
+            }
         }
     }
     
@@ -265,26 +302,37 @@ void deleteNode(){
     }
     // jika num tidak ada di head (alias ada di mid atau tail)
     else{
+        int flag = 0;
         while(curr->next->data != num){
+            if(curr == NULL){
+                printf("haihai\n");
+                flag = 1;
+                break;
+            }
             // curr setelahnya jadi curr
             curr = curr->next;
         }
-        //jika num ada di tail
-        if(curr->next->data == num){
-            //link curr ke NULL
-            curr->next = NULL;
-            // delete tail
-            free(curr->next);
-            // update curr jadi tail
-            curr = tail;
+        if(flag == 1){
+            printf("Keypoint tidak ditemukan!\n");
         }
         else{
-            // inisiasi del jadi curr ke next (alias curr setelahnya)
-            struct listNode *del = curr->next;
-            // link curr ke del setelahnya
-            curr->next = del->next;
-            // delete node del
-            free(del);
+            //jika num ada di tail
+            if(curr->next->data == num){
+                //link curr ke NULL
+                curr->next = NULL;
+                // delete tail
+                free(curr->next);
+                // update curr jadi tail
+                curr = tail;
+            }
+            else{
+                // inisiasi del jadi curr ke next (alias curr setelahnya)
+                struct listNode *del = curr->next;
+                // link curr ke del setelahnya
+                curr->next = del->next;
+                // delete node del
+                free(del);
+            }
         }
     }
 
@@ -298,13 +346,14 @@ void deleteNode(){
 struct listNode *display(){
     
     struct listNode *curr = head;
-    printf("List Node:");
+    printf("List Node: ");
     
     while(curr != NULL){
-        printf(" %d", curr->data);
+        printf("%d -> ", curr->data);
         //update ptr lompat satu depannya
         curr = curr->next;
     }
+    printf("NULL\n");
 
 }
 
@@ -312,3 +361,5 @@ void enterToContinue(){
     printf("enter to continue...");
     getchar();
 }
+
+// tinggal tambahin delete kalo ga ketemu
