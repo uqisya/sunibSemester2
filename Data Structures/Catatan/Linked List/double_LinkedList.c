@@ -21,6 +21,7 @@ struct node{
     int age;
     char name[20];
     struct node *next;
+    struct node *prev;
 };
 
 struct inputData{
@@ -40,11 +41,13 @@ struct node *createNewNode(int age, char *name){
     newNode->age = age;
     strcpy(newNode->name, name);
     newNode->next = NULL;
+    newNode->prev = NULL;
 
     return newNode;
 };
 
 struct node *display();
+struct node *infoNode();
 
 // function pertama di-run
 void main(){
@@ -90,13 +93,17 @@ void main(){
                 break;
             case 5:
                 cls;
-                deleteHead();
+                infoNode();
                 break;
             case 6:
                 cls;
-                deleteTail();
+                deleteHead();
                 break;
             case 7:
+                cls;
+                deleteTail();
+                break;
+            case 8:
                 cls;
                 deleteNode();
                 break;
@@ -121,9 +128,10 @@ void menu(){
     puts("2. Insert Tail");
     puts("3. Insert Mid");
     puts("4. Display");
-    puts("5. Delete Head");
-    puts("6. Delete Tail");
-    puts("7. Delete a Node");
+    puts("5. Check Info Node");
+    puts("6. Delete Head");
+    puts("7. Delete Tail");
+    puts("8. Delete a Node");
     puts("0. Exit");
     puts("----------------");
 }
@@ -133,15 +141,16 @@ void insertHead(){
     // initialize *newNode, assign the value of age and name
     struct node *newNode = createNewNode(data.age, data.name);
 
-    // link newNode ke head
-    newNode->next = head;
-    // update head jadi di newNode
-    head = newNode;
-
-    //ini agar tidak perlu traverse, ketika head ke next itu null
-    if(newNode->next == NULL){
-        //update tail jadi di newNode
-        tail = newNode;
+    if(head == NULL){
+        head = tail = newNode;
+    }
+    else{
+        // link newNode ke head
+        newNode->next = head;
+        //link head prev ke newNode
+        head->prev = newNode;
+        // update head jadi di newNode
+        head = newNode;
     }
 
     printf("\n");
@@ -165,6 +174,8 @@ void insertTail(){
     else{
         // link tail ke newNode
         tail->next = newNode;
+        //link newNode prev ke tail
+        newNode->prev = tail;
         // update tail jadi di newNode
         tail = newNode;
     }
@@ -243,23 +254,31 @@ void insertMid(){
             if(opsiInsert == 1){
                 // link newNode ke head
                 newNode->next = head;
+                //link head prev ke newNode
+                head->prev = newNode;
                 // update head jadi di newNode
                 head = newNode;
             }
             else{
                 newNode->next = head->next;
+                head->next->prev = newNode;
                 head->next = newNode;
+                newNode->prev = head;
             }
         }
         else if(flag == 0){
             if(opsiInsert == 1){
                 newNode->next = curr->next;
+                curr->next->prev = newNode;
                 curr->next = newNode;
+                newNode->prev = curr;
             }
             else{
                 curr = curr->next;
                 newNode->next = curr->next;
+                curr->next->prev = newNode;
                 curr->next = newNode;
+                newNode->prev = curr;
             }
         }
 
@@ -287,6 +306,7 @@ void deleteHead(){
     }
     else{
         head = head->next;
+        head->prev = NULL;
         free(curr);
 
         printf("\n");
@@ -312,9 +332,7 @@ void deleteTail(){
         struct node *curr = head;
 
         if(curr == tail){
-            head = curr->next;
-            tail = curr->next;
-
+            head = tail = curr->next;
             free(curr);
         }
         else{
@@ -380,11 +398,13 @@ void deleteNode(){
         else{
             if(flag == 2){
                 head = curr->next;
+                head->prev = NULL;
                 free(curr);
             }
             else{
                 struct node *del = curr->next;
                 curr->next = del->next;
+                del->next->prev = curr;
 
                 if(del == tail){
                     tail = curr;
@@ -409,25 +429,86 @@ struct node *display(){
     
     struct node *curr = head;
     printf("List Node: ");
+
+    printf("NULL <-> ");
     
     while(curr != NULL){
         if(curr == head && curr == tail){
-            printf("[{Head, Tail} %d %s] -> ", curr->age, curr->name);
+            printf("[{Head, Tail} %d %s] <-> ", curr->age, curr->name);
         }
         else if(curr == head){
-            printf("[{Head} %d %s] -> ", curr->age, curr->name);
+            printf("[{Head} %d %s] <-> ", curr->age, curr->name);
         }
         else if(curr == tail){
-            printf("[{Tail} %d %s] -> ", curr->age, curr->name);
+            printf("[{Tail} %d %s] <-> ", curr->age, curr->name);
         }
         else{
-            printf("[%d %s] -> ", curr->age, curr->name);
+            printf("[%d %s] <-> ", curr->age, curr->name);
         }
         
         //update ptr lompat satu depannya
         curr = curr->next;
     }
     puts("NULL\n");
+
+}
+
+struct node *infoNode(){
+
+    display();
+    
+    if(head == NULL){
+        puts("List sudah kosong!");
+    }
+    else{
+        char key[20];
+        printf("Apa nama node nya: ");
+        scanf("%s", key);
+        getchar();
+
+        struct node *curr = head;
+        
+        while(curr != NULL){
+            if(strcmp(curr->name, key) == 0){
+                printf("Head: ");
+                if(curr == head){
+                    puts("YES");
+                }
+                else{
+                    puts("-");
+                }
+
+                printf("Tail: ");
+                if(curr == tail){
+                    puts("YES");
+                }
+                else{
+                    puts("-");
+                }
+
+                if(curr->prev == NULL){
+                    printf("NULL <-> ");
+                }
+                else{
+                    printf("{Prev} [%s] <-> ", curr->prev->name);
+                }
+                
+                printf("[%s] <-> ", curr->name);
+
+                if(curr->next == NULL){
+                    printf("NULL <-> ");
+                }
+                else{
+                    printf("{Next} [%s]\n", curr->next->name);
+                }
+                break;
+            }
+            //update ptr lompat satu depannya
+            curr = curr->next;
+        }
+    }
+
+    enterToContinue();
 
 }
 

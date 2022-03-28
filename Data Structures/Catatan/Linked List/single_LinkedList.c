@@ -133,16 +133,21 @@ void insertHead(){
     // initialize *newNode, assign the value of age and name
     struct node *newNode = createNewNode(data.age, data.name);
 
-    // link newNode ke head
-    newNode->next = head;
-    // update head jadi di newNode
-    head = newNode;
-
-    //ini agar tidak perlu traverse, ketika head ke next itu null
-    if(newNode->next == NULL){
-        //update tail jadi di newNode
-        tail = newNode;
+    if(head == NULL){
+        head = tail = newNode;
     }
+    else{
+        // link newNode ke head
+        newNode->next = head;
+        // update head jadi di newNode
+        head = newNode;
+    }
+
+    // //ini agar tidak perlu traverse, ketika head ke next itu null
+    // if(newNode->next == NULL){
+    //     //update tail jadi di newNode
+    //     tail = newNode;
+    // }
 
     printf("\n");
     display();
@@ -198,7 +203,7 @@ void insertMid(){
         if(curr->next == NULL){
             flag = 1;
         }
-        else{
+        else{            
             while(strcmp(curr->next->name, key) != 0){
                 if(curr->next->next == NULL){
                     flag = 1;
