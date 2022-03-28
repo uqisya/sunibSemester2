@@ -143,12 +143,6 @@ void insertHead(){
         head = newNode;
     }
 
-    // //ini agar tidak perlu traverse, ketika head ke next itu null
-    // if(newNode->next == NULL){
-    //     //update tail jadi di newNode
-    //     tail = newNode;
-    // }
-
     printf("\n");
     display();
     printf("\n");
