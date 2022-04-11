@@ -34,7 +34,7 @@ void menu();
 void enterToContinue();
 
 void insert();
-void checkPalindrom(char word[]);
+void checkPalindrom(char huruf[]);
 
 void push(char huruf[]);
 
@@ -82,14 +82,24 @@ void insert(){
 
 }
 
-void checkPalindrom(char word[]){
+void checkPalindrom(char huruf[]){
 
+    char str[20];
+    int len = strelen(huruf);
+    for(int i = 0; i < len; i++){
+        str[i] = pop(huruf[i]);
+        
+        if(str[i] != huruf[len-1]){
+            puts("It's not palindrom");
+            break;
+        }
+    }
     
 }
 
 void push(char huruf[]){
-    int len = strlen(huruf);
 
+    int len = strlen(huruf);
     for(int i = 0; i < len; i++){
         struct node *newNode = createNewNode(huruf[i]);
 
