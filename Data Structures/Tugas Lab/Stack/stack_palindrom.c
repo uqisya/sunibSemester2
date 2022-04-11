@@ -4,7 +4,6 @@
 
 /*
 stacknya ada hapus
-
 tampilkan dari yg paling terbaru
 */
 
